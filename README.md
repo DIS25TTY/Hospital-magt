@@ -6,7 +6,11 @@ This enables us to manage the record efficiently and create a proper file manage
 
 
 Check out my Report for further reference and for your very own vtu projects or fs projects.
+
+
 [FINAL FS REPORT.pdf](https://github.com/DIS25TTY/Hospital-magt/files/11926796/FINAL.FS.REPORT.pdf)
 
 Below is the ppt we made and used it for presentation 
+
+
 [fs ppt.pptx](https://github.com/DIS25TTY/Hospital-magt/files/11926793/fs.ppt.pptx)
