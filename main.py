@@ -45,6 +45,7 @@ def sigin_pg(sigin,data,k):
         n=2
     def show():
         global tree
+        # data=search(data[0][5])
         if(k!=0):
             demo=view(k)
         else:
@@ -74,11 +75,16 @@ def sigin_pg(sigin,data,k):
         tree.column(4,width=99,anchor='nw')
         tree.column(5,width=99,anchor='nw')
         tree.column(6,width=99,anchor='nw')
+        ar=["Patient","Doctor","Admin"]
         if sigin=="Admin":
-             for i in demo:
+            for i in demo:
                   tree.insert('','end',values=i)
+            l_msg=Label(frame_down,text=ar[k-1]+" Details",height=1,font=('Ivy 11'),bg=co0,anchor=NW)
+            l_msg.place(x=10,y=290)
         else:
-            tree.insert('','end',values=data[0])
+            for i in demo:
+                if(i[5]==data[0][5]):
+                    tree.insert('','end',values=i)
     show()      
 
     def insert():
@@ -94,7 +100,10 @@ def sigin_pg(sigin,data,k):
         if(nam)=='' or gen=='' or age=='' or dob=='' or ema =='' or phno=='' or adr==''or pas=='':
             messagebox.showwarning('data' ,'Please fill in all fields')
         else:
-            add(data,n)
+            if k:
+                add(data,k)
+            else:
+                add(data,n)
             messagebox.showinfo('data','Data added successfully!!')
             e_name.delete(0,'end')
             e_gen.delete(0,'end')
@@ -142,7 +151,11 @@ def sigin_pg(sigin,data,k):
                 npas=e_pas.get()
 
                 data=[nphno,nnam,ngen,nage,ndob,nema,nphno,nadr,npas]
-                update(data,n)
+                if k:
+                    update(data,k)
+                else:
+                    update(data,n)
+                # print(k)
                 messagebox.showinfo('Success','data updated successfully!')
                 e_name.delete(0,'end')
                 e_gen.delete(0,'end')
@@ -155,9 +168,15 @@ def sigin_pg(sigin,data,k):
                 for widget in frame_table.winfo_children():
                     widget.destroy()
                 b_confirm.destroy()
+
                 show()
-            b_confirm=Button(frame_down,text="Confirm",width="15",bg=co2,font=('Ivy 10 bold'),fg=co0,command=confirm)
-            b_confirm.place(x=240,y=290)
+            if(n==1):
+                b_confirm=Button(frame_down,text="Confirm",width="15",bg=co2,font=('Ivy 10 bold'),fg=co0,command=confirm)
+                b_confirm.place(x=465,y=290)
+            else:
+                b_confirm=Button(frame_down,text="Confirm",width="15",bg=co2,font=('Ivy 10 bold'),fg=co0,command=confirm)
+                b_confirm.place(x=240,y=290)
+
         except IndexError:
             messagebox.showerror('Error','Select Your entry from the table')        
 
@@ -167,8 +186,10 @@ def sigin_pg(sigin,data,k):
             tree_dictionary=tree.item(tree_data)
             tree_list=tree_dictionary['values']
             tree_phno=str(tree_list[5])
-
-            remove(tree_phno,n)
+            if k:
+                remove(tree_phno,k)
+            else:
+                remove(tree_phno,n)
 
             messagebox.showinfo('Success','Deleted successfully!!')
             for widget in frame_table.winfo_children():
@@ -181,8 +202,10 @@ def sigin_pg(sigin,data,k):
     def to_search():
         
         phno=e_search.get()
-        data=search(phno,n)
-        
+        if k:
+            data=search(phno,k)
+        else:
+            data=search(phno,n)
         def delete_hide():
             tree.delete(*tree.get_children())
         
@@ -237,7 +260,6 @@ def sigin_pg(sigin,data,k):
     l_pas.place(x=10,y=230)
     e_pas=Entry(frame_down,width=35,justify='left',font=('Ivy',11),highlightthickness=1,relief="solid")
     e_pas.place(x=80,y=230)
-         
 
     
     if (sigin=="Admin") :
@@ -252,27 +274,69 @@ def sigin_pg(sigin,data,k):
         b_add.place(x=465,y=100)
         b_upd=Button(frame_down,text="Update",width="12",bg=co2,font=('Ivy 10 bold'),fg=co0,command=to_update)
         b_upd.place(x=465,y=140)
+        b_del=Button(frame_down,text="Delete",width="12",bg=co2,font=('Ivy 10 bold'),fg=co0,command=to_remove)
+        b_del.place(x=465,y=180)
+        b_exit=Button(frame_down,text="Exit",width="12",bg=co2,font=('Ivy 10 bold'),fg=co0,command=lambda:logged(sigin,data))
+        b_exit.place(x=465,y=280)
+     
     elif (sigin=="Patient"):
+        b_exit=Button(frame_down,text="Exit",width="12",bg=co2,font=('Ivy 10 bold'),fg=co0,command=lambda:logged(sigin,data))
+        b_exit.place(x=465,y=30)
         b_up=Button(frame_down,text="Update",width="12",bg=co2,font=('Ivy 10 bold'),fg=co0,command=to_update)
         b_up.place(x=465,y=60)
         l_dis=Label(frame_down,text="Disease ",height=1,font=('Ivy 11'),bg=co0,anchor=NW)
         l_dis.place(x=10,y=260)
         e_dis=Entry(frame_down,width=35,justify='left',font=('Ivy',11),highlightthickness=1,relief="solid")
         e_dis.place(x=80,y=260)
+        
         l_dr=Label(frame_down,text="Doctor ",height=1,font=('Ivy 11'),bg=co0,anchor=NW)
         l_dr.place(x=10,y=290)
         e_dr= ttk.Combobox(frame_down,width=37)
-        e_dr['values']=['','Dr Fatima','Dr Mahesh','Dr Anjali']
+        drdet=view(2)
+        dat=[]
+        for i in drdet:
+            dat.append(i[0])
+        def book():
+            l_date=Label(frame_down,text="Date ",height=1,font=('Ivy 11'),bg=co0,anchor=NW)
+            l_date.place(x=420,y=170)
+            e_date=Entry(frame_down,width=10,justify='left',font=('Ivy',11),highlightthickness=1,relief="solid")
+            e_date.place(x=465,y=170)
+            l_tim=Label(frame_down,text="Time ",height=1,font=('Ivy 11'),bg=co0,anchor=NW)
+            l_tim.place(x=420,y=200)
+            e_time=Entry(frame_down,width=10,justify='left',font=('Ivy',11),highlightthickness=1,relief="solid")
+            e_time.place(x=465,y=200)
+            b_conf=Button(frame_down,text="Confirm",width="15",bg=co2,font=('Ivy 10 bold'),fg=co0,command=lambda:bk_confirm())
+            b_conf.place(x=465,y=290)
+            def bk_confirm():
+                dis=e_dis.get()
+                datebk=e_date.get()
+                doc=e_dr.get()
+                tim=e_time.get()
+                dd=[doc,data[0][0],dis,datebk,tim]
+                print(dd)
+                if(dis=='' or datebk=='' or tim=='' or doc==''):
+                    messagebox.showerror('Error','Fill the details')
+                else:
+                    add(dd,4)
+                    messagebox.showinfo('Booked','Appointment Successfully Added')
+
+        e_dr['values']=dat
         e_dr.place(x=80,y=290)
-        dis=e_dis.get()
-        b_dr=Button(frame_down,text="Book appointment",width="15",bg=co2,font=('Ivy 10 bold'),fg=co0,command=lambda:book(data))
-        b_dr.place(x=465,y=90)
+        
+        b_dr=Button(frame_down,text="Book appointment",width="15",bg=co2,font=('Ivy 10 bold'),fg=co0,command=lambda:book())
+        b_dr.place(x=465,y=100)
+        b_del=Button(frame_down,text="Delete",width="12",bg=co2,font=('Ivy 10 bold'),fg=co0,command=to_remove)
+        b_del.place(x=465,y=250)
     else:
         b_up=Button(frame_down,text="Update",width="12",bg=co2,font=('Ivy 10 bold'),fg=co0,command=to_update)
         b_up.place(x=465,y=60)
-        
-    b_del=Button(frame_down,text="Delete",width="12",bg=co2,font=('Ivy 10 bold'),fg=co0,command=to_remove)
-    b_del.place(x=465,y=180)
+        b_del=Button(frame_down,text="Delete",width="12",bg=co2,font=('Ivy 10 bold'),fg=co0,command=to_remove)
+        b_del.place(x=465,y=180)
+        b_exit=Button(frame_down,text="Exit",width="12",bg=co2,font=('Ivy 10 bold'),fg=co0,command=lambda:logged(sigin,data))
+        b_exit.place(x=465,y=280)
+    window.mainloop()
+
+    
 
 def newsig_pg(sigin):
 
@@ -461,6 +525,8 @@ def newsig_pg(sigin):
     b_add.place(x=465,y=100)
     b_upd=Button(frame_down,text="Update",width="12",bg=co2,font=('Ivy 10 bold'),fg=co0,command=to_update)
     b_upd.place(x=465,y=140)
+    b_exit=Button(frame_down,text="Update",width="12",bg=co2,font=('Ivy 10 bold'),fg=co0,command=starting)
+    b_exit.place(x=465,y=240)
     
     l_dis=Label(frame_down,text="Disease ",height=1,font=('Ivy 11'),bg=co0,anchor=NW)
     l_dis.place(x=10,y=260)
@@ -478,4 +544,95 @@ def newsig_pg(sigin):
 
 
 
+
+
+def starting():
+    clear_fra(frame_down)
+    clear_fra(frame_table)
+    clear_fra(frame_up)
+    app_name=Label(frame_up,text="DG HOSPITAL",height=1,font=('Verdana 17 bold'),bg=co2,fg=co0)
+    app_name.place(x=5,y=5)   
+    b_ad=Button(frame_down,text="Admin",width="20",bg=co2,font=('Ivy 20 bold'),fg=co0,command=lambda:login("Admin"))
+    b_ad.place(x=130,y=100)
+    b_pa=Button(frame_down,text="Patient",width="20",bg=co2,font=('Ivy 20 bold'),fg=co0,command=lambda:login('Patient'))
+    b_pa.place(x=130,y=180)
+    b_dr=Button(frame_down,text="Doctor",width="20",bg=co2,font=('Ivy 20 bold'),fg=co0,command=lambda:login('Doctor'))
+    b_dr.place(x=130,y=260)
+def clear_fra(frame):
+    for i in frame.winfo_children():
+        i.destroy()
+
+def logged(sigin,data):
+    clear_fra(frame_down)
+    clear_fra(frame_table)
+    
+    app_name=Label(frame_up,text="Logged IN              "+sigin+"--"+data[0][0]+"  DGH",height=1,font=('Verdana 17 bold'),bg=co2,fg=co0)
+    app_name.place(x=5,y=5)    
+    
+    if(sigin=="Admin"):
+        b_adm=Button(frame_down,text="Admin Details",width="20",bg=co2,font=('Ivy 20 bold'),fg=co0,command=lambda: sigin_pg("Admin",data,3))
+        b_adm.place(x=130,y=80)
+        b_pa=Button(frame_down,text="Patient Details",width="20",bg=co2,font=('Ivy 20 bold'),fg=co0,command=lambda:sigin_pg("Admin",data,1))
+        b_pa.place(x=130,y=160)
+        b_dr=Button(frame_down,text="Doctor Details",width="20",bg=co2,font=('Ivy 20 bold'),fg=co0,command=lambda:sigin_pg("Admin",data,2))
+        b_dr.place(x=130,y=240)
+        b_ap=Button(frame_table,text="Appointments Details",width="20",bg=co2,font=('Ivy 20 bold'),fg=co0,command=lambda:appoint("Admin",data))
+        b_ap.place(x=120,y=5)
+        
+    
+    elif sigin=="Doctor":
+        b_my=Button(frame_down,text="My Details",width="20",bg=co2,font=('Ivy 20 bold'),fg=co0,command=lambda: sigin_pg("Doctor",data,0))
+        b_my.place(x=130,y=100)
+        b_ap=Button(frame_down,text="Appointment Details",width="20",bg=co2,font=('Ivy 20 bold'),fg=co0,command=lambda:appoint("Doctor",data))
+        b_ap.place(x=130,y=180)
+    else:  
+        b_pa=Button(frame_down,text="My Details",width="20",bg=co2,font=('Ivy 20 bold'),fg=co0,command=lambda: sigin_pg("Patient",data,0))
+        b_pa.place(x=130,y=100)
+        b_ap=Button(frame_down,text="Appointment Details",width="20",bg=co2,font=('Ivy 20 bold'),fg=co0,command=lambda:appoint("Patient",data))
+        b_ap.place(x=130,y=180)
+    b_exit=Button(frame_table,text="Exit",width="20",bg=co2,font=('Ivy 20 bold'),fg=co0,command=starting)
+    b_exit.place(x=120,y=80)
+
+
     window.mainloop()
+
+def login(sigin):
+    clear_fra(frame_down)
+    clear_fra(frame_up)
+    if(sigin=="Admin"):
+        n=3
+    elif sigin=="Patient":
+        n=1
+    elif sigin=="Doctor" :
+        n=2
+    app_name=Label(frame_up,text=sigin+" Login                       DG Hospital",height=1,font=('Verdana 17 bold'),bg=co2,fg=co0)
+    app_name.place(x=5,y=5)
+    l_phno=Label(frame_down,text="Phno *",width=25,height=2,font=('Ivy 13'),bg=co0,anchor=NW)
+    l_phno.place(x=100,y=150)
+    e_phno=Entry(frame_down,width=35,justify='left',highlightthickness=1,relief="solid")
+    e_phno.place(x=190,y=150)
+    l_pas=Label(frame_down,text="Password *",width=25,height=2,font=('Ivy 13'),bg=co0,anchor=NW)        
+    l_pas.place(x=100,y=190)
+    e_pas=Entry(frame_down,width=35,justify='left',highlightthickness=1,relief="solid")
+    e_pas.place(x=190,y=190)
+    def check():
+        phno=e_phno.get()
+        pas=e_pas.get()
+        data=search(phno,n)
+        print(data)
+        if data:
+            if data[0][7]==pas and data[0][5]==phno:
+                logged(sigin,data)
+            else:
+                messagebox.showerror('Error','Wrong details!!') 
+    b_back=Button(frame_down,text="Back",width="15",bg=co2,font=('Ivy 10 bold'),fg=co0,command=starting)
+    b_back.place(x=220,y=220)
+    b_log=Button(frame_down,text="Login",width="15",bg=co2,font=('Ivy 10 bold'),fg=co0,command=check)
+    b_log.place(x=220,y=260)
+    if(sigin=="Patient"):
+        b_sup=Button(frame_down,text="Sign up",width="15",bg=co2,font=('Ivy 10 bold'),fg=co0,command=lambda: newsig_pg(sigin))
+        b_sup.place(x=220,y=300) 
+    window.mainloop()
+
+starting()
+window.mainloop()

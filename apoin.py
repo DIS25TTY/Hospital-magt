@@ -37,7 +37,7 @@ def appoint(sigin,data):
         demo=view(4)
         app_name=Label(frame_up,text=sigin+"Appointments                  DG Hosp",height=1,font=('Verdana 17 bold'),bg=co2,fg=co0)
         app_name.place(x=5,y=5)   
-        listh=['dr','Disease','pat','Date','Time']
+        listh=['dr','pat','dis','Date','Time']
         tree=ttk.Treeview(frame_table,selectmode="extended",columns=listh,show="headings")
         vsb=ttk.Scrollbar(frame_table,orient="vertical",command=tree.yview)
         hsb=ttk.Scrollbar(frame_table,orient="horizontal",command=tree.xview)
@@ -82,11 +82,9 @@ def appoint(sigin,data):
             for i in demo:
                 tree.insert('','end',values=i)
         else:
-            dd=search(data[0][5],4)
+            dd=search(data[0][0],4)
+            print(data[0][5])
             tree.insert('','end',values=dd[0])
             
     show()
     window.mainloop()
-def book(data):
-    add(data[0],4)
-    messagebox.showinfo('Booked','Appointment Successfully Added')

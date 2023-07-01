@@ -127,10 +127,22 @@ def remove(i,n):
 
 def update(i,n):
     def up_new(j):#modifying the format
-        with open('patient.csv','w',newline='') as file:
-            writer =csv.writer(file)
-            writer.writerows(j)
-
+        if n==1:
+            with open('patient.csv','w',newline='') as file:
+                writer =csv.writer(file)
+                writer.writerows(j)
+        elif n==2:
+            with open('doctor.csv','w',newline='') as file:
+                writer =csv.writer(file)
+                writer.writerows(j)
+        elif n==3:
+            with open('admin.csv','w',newline='') as file:
+                writer =csv.writer(file)
+                writer.writerows(j)
+        elif n==4:
+            with open('apoint.csv','w',newline='') as file:
+                writer =csv.writer(file)
+                writer.writerows(j)
     newlist=[]
     phno=i[0]
     if(n==1):
@@ -228,7 +240,7 @@ def update(i,n):
     #                     data=[nam,gen,age,dob,email,ph,adr,pas]
     #                     index=newlist.index(row)
     #                     newlist[index]=data
-            up_new(newlist)
+    up_new(newlist)
 
 # sam=['123','girlcod','F','13','12/1/23','girl@gmail.com','123','konnapana']
 # update(sam)

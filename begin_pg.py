@@ -21,7 +21,7 @@ def clear_fra(frame):
 def logged(sigin,data):
     clear_fra(frame_down)
     
-    app_name=Label(frame_up,text="Logged IN               "+sigin+"--"+data[0][0]+"  DG Hosp",height=1,font=('Verdana 17 bold'),bg=co2,fg=co0)
+    app_name=Label(frame_up,text="Logged IN              "+sigin+"--"+data[0][0]+"  DGH",height=1,font=('Verdana 17 bold'),bg=co2,fg=co0)
     app_name.place(x=5,y=5)    
     
     if(sigin=="Admin"):
@@ -67,7 +67,6 @@ def login(sigin):
     l_pas.place(x=100,y=190)
     e_pas=Entry(frame_down,width=35,justify='left',highlightthickness=1,relief="solid")
     e_pas.place(x=190,y=190)
-    data=[]
     def check():
         phno=e_phno.get()
         pas=e_pas.get()
